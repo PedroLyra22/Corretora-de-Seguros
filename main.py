@@ -15,3 +15,12 @@ print(customer.to_object())
 print(product.__dict__)
 print(quotation.__dict__)
 print(sale.__dict__)
+
+
+quotation.apply_discount(0.2)
+
+print(sale.__dict__)
+
+sale.set_final_price()
+
+print(sale.__dict__)
