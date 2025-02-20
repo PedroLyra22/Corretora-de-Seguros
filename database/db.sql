@@ -26,9 +26,9 @@ CREATE TABLE IF NOT EXISTS quotations (
     customer_id INTEGER,
     product_id INTEGER,
     responsable TEXT,
-    comission FLOAT
+    comission FLOAT,
 
-	FOREIGN KEY (customer_id) REFERENCES customers(id)
+	FOREIGN KEY (customer_id) REFERENCES customers(id),
 	FOREIGN KEY (product_id) REFERENCES products(id)
 )
 
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS sales (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     quotation_id INTEGER,
     comission FLOAT,
-    final_price FLOAT
+    final_price FLOAT,
 
     FOREIGN KEY (quotation_id) REFERENCES quotations(id)
 )
