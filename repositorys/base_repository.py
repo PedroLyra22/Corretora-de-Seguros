@@ -1,7 +1,10 @@
 import sqlite3
+import os
 
 class BaseRepository:
     def __init__(self):
+        if not os.path.exists('corretora.db'):
+            print("Create Database!")
         self.connection = sqlite3.connect('corretora.db')
         self.cursor = self.connection.cursor()
 
@@ -57,9 +60,9 @@ class BaseRepository:
                 customer_id INTEGER,
                 product_id INTEGER,
                 responsable TEXT,
-                comission FLOAT
+                comission FLOAT,
             
-                FOREIGN KEY (customer_id) REFERENCES customers(id)
+                FOREIGN KEY (customer_id) REFERENCES customers(id),
                 FOREIGN KEY (product_id) REFERENCES products(id)
             )
             '''
@@ -72,7 +75,7 @@ class BaseRepository:
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 quotation_id INTEGER,
                 comission FLOAT,
-                final_price FLOAT
+                final_price FLOAT,
             
                 FOREIGN KEY (quotation_id) REFERENCES quotations(id)
             )
