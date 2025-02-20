@@ -3,9 +3,9 @@ import os
 
 class BaseRepository:
     def __init__(self):
-        if not os.path.exists("..\Corretora-de-Seguros\corretora.db"):
-            print("Create Database!")
-        self.connection = sqlite3.connect("..\Corretora-de-Seguros\corretora.db")
+      #  if not os.path.exists(r'..\corretora.db'):
+      #      print("Create Database!")
+        self.connection = sqlite3.connect(r'..\corretora.db')
         self.cursor = self.connection.cursor()
 
     def initial_database(self):
