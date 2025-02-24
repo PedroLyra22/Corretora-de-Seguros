@@ -1,32 +1,39 @@
-from main import employee
 from repositorys.base_repository import BaseRepository
-
 
 class CustomerRepository(BaseRepository):
     def __init__(self):
-        super().__init__()
+        super().__init__(environment='staging')
 
     def create(self, customer):
         query = 'INSERT INTO customers (name, email, phone) VALUES (?, ?, ?)'
         self.cursor.execute(query, (customer.name, customer.email, customer.phone))
         self.connection.commit()
 
-    def delete_by_id(self):
-        pass
+        return self.cursor.lastrowid
 
-    def update_by_id(self):
-        pass
+    def delete_by_id(self, id):
+        query = 'DELETE FROM customers WHERE id = ?'
+        self.cursor.execute(query, (id,))
+        self.connection.commit()
 
-    def find_by_id(self, id):
-        query = 'SELECT * FROM customers WHERE id = ?'
-        result = self.cursor.execute(query, (id,))
+    def update_by_id(self, id, customer):
+        query = 'UPDATE customers SET name = ?, email = ?, phone = ? WHERE id = ?'
+        self.cursor.execute(query, (customer.name, customer.email, customer.phone, id))
+        self.connection.commit()
 
-        row = result.fetchone()
+    def find_by_id(self, customer_id):
+        self.cursor.execute(
+            'SELECT * FROM customers WHERE id = ?',
+            (customer_id,)
+        )
+        return self.cursor.fetchone()
 
-        if row is None:
-            print('empty')
+    def find_all(self, limit=10):
+        query = 'SELECT * FROM customers LIMIT ?'
+        result = self.cursor.execute(query, (limit,))
+        rows = result.fetchall()
 
-        return row
+        if not rows:
+            print('No customers found')
 
-    def find_all(self, limit = 10):
-        pass
+        return rows
