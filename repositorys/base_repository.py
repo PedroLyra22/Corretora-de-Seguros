@@ -1,12 +1,23 @@
-import sqlite3
 import os
+import sqlite3
+
 
 class BaseRepository:
-    def __init__(self):
-      #  if not os.path.exists(r'..\corretora.db'):
-      #      print("Create Database!")
-        self.connection = sqlite3.connect(r'..\corretora.db')
+    def __init__(self, environment):
+        self.environment = environment
+        self.connection = sqlite3.connect(self.handler_database_name())
         self.cursor = self.connection.cursor()
+
+    def __del__(self):
+        if self.connection:
+            self.connection.close()
+
+    def handler_database_name(self):
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        if self.environment == 'production':
+            return os.path.join(base_dir, '..', 'database', 'database_production.db')
+        else:
+            return os.path.join(base_dir, '..', 'database', 'database_staging.db')
 
     def initial_database(self):
         self.create_customer()
@@ -14,7 +25,15 @@ class BaseRepository:
         self.create_product()
         self.create_quotation()
         self.create_sale()
-        self.connection.close()
+
+    def clean_database(self):
+        self.cursor.execute('DELETE FROM sales')
+        self.cursor.execute('DELETE FROM quotations')
+        self.cursor.execute('DELETE FROM products')
+        self.cursor.execute('DELETE FROM employees')
+        self.cursor.execute('DELETE FROM customers')
+
+        self.connection.commit()
 
     def create_customer(self):
         self.cursor.execute(
@@ -61,7 +80,7 @@ class BaseRepository:
                 product_id INTEGER,
                 responsable TEXT,
                 comission FLOAT,
-            
+
                 FOREIGN KEY (customer_id) REFERENCES customers(id),
                 FOREIGN KEY (product_id) REFERENCES products(id)
             )
@@ -76,13 +95,8 @@ class BaseRepository:
                 quotation_id INTEGER,
                 comission FLOAT,
                 final_price FLOAT,
-            
+
                 FOREIGN KEY (quotation_id) REFERENCES quotations(id)
             )
             '''
         )
-
-
-
-
-
